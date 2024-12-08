@@ -32,7 +32,7 @@ variable "public_key" {
   description = "The name of the key pair."
 }
 resource "aws_instance" "server" {
-    ami = "ami-0e2c8caa4b6378d8c"
+    ami = "ami-0453ec754f44f9a4a"
     instance_type = "t2.micro"
     key_name = aws_key_pair.deploy.key_name
     vpc_security_group_ids = [aws_security_group.maingroup.id]
@@ -41,7 +41,7 @@ resource "aws_instance" "server" {
     connection {
         type = "ssh"
         host = self.public_ip
-        user="ubuntu"
+        user="Linux"
         private_key = var.private_key_path
         timeout = "4m"
     }
