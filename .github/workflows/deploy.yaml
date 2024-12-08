@@ -7,6 +7,11 @@ on:
 env:
   aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
   aws_secret_access_key: ${{ secrets.AWS_SECRET_KEY }}
+  aws_secret_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+  AWS_REGION: us-east-1
+  PUBLIC_SSH_KEY: ${{ secrets.PUBLIC_SSH_KEY }}
+  PRIVATE_SSH_KEY: ${{ secrets.PRIVATE_SSH_KEY }}
+  
 
 jobs:
   deploye-onfra:
@@ -70,7 +75,7 @@ deploy-app:
         host: ${{ env.SERVER_PUBLIC_IP }}
         username: Linux
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        envs: PRIVATE_SSH_KEY.REGISTRY.REPOSITORY.IMAGE_TAG,AWS_DEFAULT_REGION,AWS_REGION
+        envs: PRIVATE_SSH_KEY.REGISTRY.REPOSITORY.IMAGE_TAG.AWS_DEFAULT_REGION.AWS_REGION
         script: |-
           sudo apt update
           sudo apt install docker.io -y 
