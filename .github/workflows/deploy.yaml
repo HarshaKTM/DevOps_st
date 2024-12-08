@@ -1,0 +1,40 @@
+name: CI/CD with Terraform
+on:
+  push:
+    branches:
+    - Complete-CI/CD-with- Terraform
+
+env:
+  aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  aws_secret_access_key: ${{ secrets.AWS_SECRET_KEY }}
+
+jobs:
+  deploye-onfra:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: setup terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_wrapper: false    
+    - name: terraform init
+      id: init
+      run: terraform init -backend-config=backend.tf -backend-config="region=us-east-1"
+      working-directory: ./terraform
+    - name: terraform plan
+      id: plan
+      run: |-
+       terraform plan \
+      -var"region=us-east-1" \
+      -var"public_key=$PUBLIC_SSH_KEY" \
+      -var"private_key=$PRIVATE_SSH_KEY" \
+      -var"key_name=deploy-key" \
+      -out-PLAN
+      working-directory: ./terraform
+    - name: terraform apply
+      id: apply
+      run: terraform apply "PLAN"
+      working-directory: ./terraform
+
+    
