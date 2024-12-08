@@ -26,11 +26,11 @@ jobs:
       id: plan
       run: |-
        terraform plan \
-      -var"region=us-east-1" \
-      -var"public_key=$PUBLIC_SSH_KEY" \
-      -var"private_key=$PRIVATE_SSH_KEY" \
-      -var"key_name=deploy-key" \
-      -out-PLAN
+        -var"region=us-east-1" \
+        -var"public_key=$PUBLIC_SSH_KEY" \
+        -var"private_key=$PRIVATE_SSH_KEY" \
+        -var"key_name=deploy-key" \
+        -out-PLAN
       working-directory: ./terraform
     - name: terraform apply
       id: apply
