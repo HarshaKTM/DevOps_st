@@ -59,4 +59,24 @@ deploy-app:
       run: |-
         docker build -t REGISTRY/REPOSITORY:IMAGE_TAG .
         docker push REGISTRY/REPOSITORY:IMAGE_TAG
-    
+    - name: Deploy docker image to EC2
+      env:
+        REGISTRY: ${{ steps.login.outputs.registry }}
+        REPOSITORY: example-node-app
+        IMAGE_TAG: ${{ github.sha }}
+        AWS_DEFAULT_REGION: us-east-1
+      user: appleboy/ssh-action@master
+      with:
+        host: ${{ env.SERVER_PUBLIC_IP }}
+        username: Linux
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        envs: PRIVATE_SSH_KEY.REGISTRY.REPOSITORY.IMAGE_TAG,AWS_DEFAULT_REGION,AWS_REGION
+        script: |-
+          sudo apt update
+          sudo apt install docker.io -y 
+          sudo apt install awscli -y
+          sudo $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION);
+          sudo docker stop myappcontainer || true
+          sudo docker rm myappcontainer || true
+          sudo docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          sudo docker run -d -p 80:8080 --name myappcontainer $REGISTRY/$REPOSITORY:$IMAGE_TAG
